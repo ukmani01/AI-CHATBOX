@@ -1,0 +1,125 @@
+/* Container */
+.chatbox-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #1e1e2f;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  color: #fff;
+}
+
+/* Title */
+.chatbox-title {
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  padding: 15px;
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Messages area */
+.chatbox-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #2a2a3d;
+}
+
+/* Individual messages */
+.chat-message {
+  margin-bottom: 15px;
+  padding: 12px 16px;
+  border-radius: 15px;
+  max-width: 80%;
+  position: relative;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* User messages */
+.user-message {
+  background: #4b6cb7;
+  margin-left: auto;
+  text-align: right;
+  color: #fff;
+}
+
+/* AI messages */
+.ai-message {
+  background: #00c6ff;
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  color: #fff;
+  margin-right: auto;
+}
+
+/* Input area */
+.chatbox-input {
+  display: flex;
+  border-top: 2px solid #333;
+  padding: 10px;
+  background: #1e1e2f;
+}
+
+.chatbox-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: #2a2a3d;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.chatbox-input input:focus {
+  background: #3b3b5c;
+}
+
+.chatbox-input button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #6a11cb;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.chatbox-input button:hover {
+  background: #2575fc;
+  transform: scale(1.05);
+}
+
+/* Smooth fade-in animation for messages */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar customization */
+.chatbox-messages::-webkit-scrollbar {
+  width: 6px;
+}
+.chatbox-messages::-webkit-scrollbar-track {
+  background: #2a2a3d;
+  border-radius: 10px;
+}
+.chatbox-messages::-webkit-scrollbar-thumb {
+  background: #6a11cb;
+  border-radius: 10px;
+}
