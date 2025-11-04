@@ -1,0 +1,244 @@
+
+i went show my History
+
+
+
+
+// src/NavbarMenu/NavbarMenu.js
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+export default function NavbarMenu() {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <div className="position-relative">
+      <button
+        className="btn btn-light fw-bold"
+        style={{ fontSize: "1rem" }}
+        onClick={() => setShowMenu(!showMenu)}
+      >
+        ChatAi
+      </button>
+
+      {showMenu && (
+        <div
+          className="bg-light border shadow-sm p-2 position-absolute mt-1"
+          style={{ maxHeight: "200px", overflowY: "auto", zIndex: 1000 }}
+        >
+          <ul className="list-unstyled mb-0 d-flex flex-column gap-2">
+            <li>
+              <Link className="text-decoration-none" to="/home">🏠 Home</Link>
+            </li>
+            <li>
+              <Link className="text-decoration-none" to="/register">📝 Register</Link>
+            </li>
+            <li>
+              <Link className="text-decoration-none" to="/history">📜 History</Link>
+            </li>
+            <li>
+              <Link className="text-decoration-none" to="/about">📖 About</Link>
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+// App.js
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
+import Chatbox from "./kkk/Chatbox";
+import Register from "./resister/Register";
+import Login from "./resister/Login";
+import Home from "./resister/Home";
+import About from "./resister/About";
+import NavbarMenu from "./NavbarMenu/NavbarMenu";
+import History from "./History/History";   // ✅ Added
+
+import "./App.css";
+import { PersonCircle } from "react-bootstrap-icons";
+
+// ✅ Navbar with NavbarMenu
+const Navbar = ({ token, username, logout }) => (
+  <nav
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      padding: "10px 20px",
+      background: "#eee",
+    }}
+  >
+    {/* Left side: NavbarMenu dropdown */}
+    <NavbarMenu />
+
+    {/* Right side: Auth links */}
+    <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+      {token ? (
+        <>
+          <span>
+            <PersonCircle size={24} /> {username}
+          </span>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/">Register</Link>
+        </>
+      )}
+    </div>
+  </nav>
+);
+
+// ✅ Protected Route
+const ProtectedRoute = ({ token, children }) =>
+  !token ? <Navigate to="/login" replace /> : children;
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || ""
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) localStorage.setItem("token", token);
+    if (username) localStorage.setItem("username", username);
+  }, [token, username]);
+
+  const logout = () => {
+    setToken("");
+    setUsername("");
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
+
+  return (
+    <>
+      <Navbar token={token} username={username} logout={logout} />
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login setToken={setToken} setUsername={setUsername} />}
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/about" element={<About />} />
+
+        {/* ✅ History Page (Protected) */}
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute token={token}>
+              <History />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute token={token}>
+              <Chatbox username={username} />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
+}
+
+export default function AppWrapper() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
+// src/kkk/Chatbox.js
+import React, { useState, useEffect } from "react";
+
+const Chatbox = ({ username }) => {
+  const [messages, setMessages] = useState([
+    { from: "ai", text: "Hello! How can I help you today?" },
+  ]);
+  const [input, setInput] = useState("");
+
+  // ✅ Load saved messages when chatbox starts
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+    if (savedHistory.length > 0) {
+      setMessages(savedHistory);
+    }
+  }, []);
+
+  // ✅ Save messages to localStorage whenever messages change
+  useEffect(() => {
+    localStorage.setItem("chatHistory", JSON.stringify(messages));
+  }, [messages]);
+
+  const sendMessage = () => {
+    if (!input) return;
+
+    const newMessages = [...messages, { from: username || "user", text: input }];
+    setMessages(newMessages);
+
+    // Example AI response
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        { from: "ai", text: `You said: "${input}"` },
+      ]);
+    }, 500);
+
+    setInput("");
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Chatbox</h2>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          padding: "10px",
+          height: "300px",
+          overflowY: "auto",
+          marginBottom: "10px",
+        }}
+      >
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            style={{
+              textAlign: msg.from === "ai" ? "left" : "right",
+              margin: "5px 0",
+            }}
+          >
+            <b>{msg.from}:</b> {msg.text}
+          </div>
+        ))}
+      </div>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        placeholder="Type a message..."
+      />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  );
+};
+
+export default Chatbox;
+

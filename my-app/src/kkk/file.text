@@ -1,0 +1,93 @@
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+
+const Chatbox = ({ username }) => {
+  const [message, setMessage] = useState("");
+  const [chats, setChats] = useState([]);
+  const chatEndRef = useRef(null);
+
+  // Scroll to bottom whenever chats update
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Load chat history
+  const fetchChats = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/chat");
+      setChats(res.data);
+      scrollToBottom();
+    } catch (err) {
+      console.error("Error fetching chats:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats]);
+
+  // Send message
+  const sendMessage = async () => {
+    if (!message.trim()) return;
+
+    try {
+      const res = await axios.post("http://localhost:5000/chat", { message });
+
+      setChats((prev) => [
+        ...prev,
+        { userMessage: message, aiReply: res.data.reply },
+      ]);
+      setMessage("");
+    } catch (err) {
+      console.error("Error sending message:", err);
+    }
+  };
+
+  // Handle enter key
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") sendMessage();
+  };
+
+  return (
+    <div style={styles.container}>
+      <h2>💬 Chat with AI</h2>
+      <div style={styles.chatBox}>
+        {chats.map((c, i) => (
+          <div key={i} style={styles.message}>
+            <p><b>{username}:</b> {c.userMessage}</p>
+            <p><b>AI:</b> {c.aiReply}</p>
+          </div>
+        ))}
+        <div ref={chatEndRef} />
+      </div>
+      <div style={styles.inputBox}>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
+          placeholder="Type your message..."
+          style={styles.input}
+        />
+        <button onClick={sendMessage} style={styles.button}>Send</button>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  container: { width: "600px", margin: "20px auto" },
+  chatBox: { border: "1px solid #ccc", padding: "10px", height: "400px", overflowY: "auto", borderRadius: "8px", marginBottom: "10px" },
+  message: { marginBottom: "10px", padding: "5px", background: "#f1f1f1", borderRadius: "6px" },
+  inputBox: { display: "flex", gap: "10px" },
+  input: { flex: 1, padding: "10px", borderRadius: "6px", border: "1px solid #ccc" },
+  button: { padding: "10px 15px", borderRadius: "6px", background: "#007bff", color: "#fff", border: "none" },
+};
+
+export default Chatbox;

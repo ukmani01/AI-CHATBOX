@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+    <div>
+        <h1>FORM VALITATION</h1>
+
+<form onsubmit="valitateform()">
+        <label >name</label><br>
+        <input type="text" id="name"><br>
+        <span id="nameeror" class="eror"></span><br>
+
+        
+        <label >email</label><br>
+        <input type="text" id="email"><br>
+        <span id="emaileror" class="eror"></span><br>
+
+
+
+        <label >phone number</label><br>
+        <input type="text" id="phone"><br>
+        <span id="phoneeror" class="eror"></span><br>
+
+
+
+        <label >password</label><br>
+        
+        <input type="text" id="password"><br>
+        <span id="passworderor" class="eror"></span><br>
+
+
+
+        <label >conform password</label><br>
+        <input type="text" id="conformpassword"><br>
+        <span id="conformpassworderor" class="eror"></span><br>
+
+        <button>submit</button>
+        <p id="formsucces" class="succes"></p>
+        </form>
+</div>
+
+
+<script>
+function valitateform(){
+    let valid=true
+    const name=document.getElementById("name").value.trim();
+    const email=document.getElementById("email").value.trim();
+    const phone=document.getElementById("phone").value.trim();
+    const password=document.getElementById("password").value.trim();
+    document.getElementById("formsucces")
+
+    const   conformpasword=
+    document.getElementById("conformpassword").value.trim();
+
+
+
+    document.getElementById("nameeror").innerText="";
+    document.getElementById("emaileror").innerText="";
+    document.getElementById("phoneeror").innerText="";
+    document.getElementById("passworderor").innerText="";
+    
+    document.getElementById("conformpassworderor").innerText="";
+
+if(name===""){
+document.getElementById("nameeror").innerText="enter valid name"
+valid=false;
+
+}
+const emailpattern=/^[^@]+@[^@]+\.[a-z]{2}$/i;
+if(!emailpattern.test(email)){
+    document.getElementById("emaileror").innerText="enter valid email"
+    valid=false
+}
+const phonepattern=/^[0-9]{10}$/;
+if(!phonepattern.test(phone)){
+    document.getElementById("phoneeror").innerText="plese enter your valid phone number"
+    valid=false;
+}
+const  passwordpattern=/^(?=.*[a-Za-z])(?=.*\D)[a-za-z\d]{6,}$/;
+if(!passwordpattern.test(password)){
+    document.getElementById("passworderor").innerText="pless enter correct password"
+    valid=false
+}
+if(conformpassword!==password){
+    document.getElementById("conformpassworderor").innerText="pless same text now"
+}
+
+if(valid){
+    document.getElementById("formsucces").innerText="successd"
+    
+
+}
+return valid;
+
+
+
+
+}
+</script>
+
+    </body>
+</html>

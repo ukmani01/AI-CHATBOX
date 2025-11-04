@@ -1,0 +1,164 @@
+// App.js
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
+import Chatbox from "./kkk/Chatbox";
+import Register from "./resister/Register";
+import Login from "./resister/Login";
+import Home from "./resister/Home";
+import About from "./resister/About";
+import NavbarMenu from "./NavbarMenu/NavbarMenu";
+import UploadImage from './Up/UploadImage'   //pless Add UploadImage place input side 
+import History from './History/History.js Add History option
+import "./App.css";
+
+import { PersonCircle } from "react-bootstrap-icons";
+
+// ✅ Navbar with NavbarMenu
+const Navbar = ({ token, username, logout }) => (
+  <nav
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      padding: "10px 20px",
+      background: "#eee",
+    }}
+  >
+    {/* Left side: NavbarMenu dropdown */}
+    <NavbarMenu />
+
+    {/* Right side: Auth links */}
+    <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+      {token ? (
+        <>
+          <span>
+            <PersonCircle size={24} /> {username}
+          </span>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/">Register</Link>
+        </>
+      )}
+    </div>
+  </nav>
+);
+
+// ✅ Protected Route
+const ProtectedRoute = ({ token, children }) =>
+  !token ? <Navigate to="/login" replace /> : children;
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || ""
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) localStorage.setItem("token", token);
+    if (username) localStorage.setItem("username", username);
+  }, [token, username]);
+
+  const logout = () => {
+    setToken("");
+    setUsername("");
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
+
+  return (
+    <>
+      <Navbar token={token} username={username} logout={logout} />
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login setToken={setToken} setUsername={setUsername} />}
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute token={token}>
+              <Chatbox username={username} />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
+}
+
+export default function AppWrapper() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
+
+// src/Up/UploadImage.js
+import React, { useState } from "react";
+
+const UploadImage = () => {
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    setFile(selected);
+    if (selected) {
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
+
+  const handleUpload = () => {
+    if (!file) {
+      alert("Please select an image first!");
+      return;
+    }
+    // Here you can send the file to your backend with fetch/axios
+    alert(`Uploading: ${file.name}`);
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Upload Image</h2>
+      <input type="file" accept="image/*" onChange={handleFileChange} />
+      <button onClick={handleUpload} style={{ marginLeft: "10px" }}>
+        Upload
+      </button>
+
+      {preview && (
+        <div style={{ marginTop: "20px" }}>
+          <h4>Preview:</h4>
+          <img
+            src={preview}
+            alt="preview"
+            style={{ width: "200px", borderRadius: "8px" }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default UploadImage;
+
+
+
+
+
+History.js Add

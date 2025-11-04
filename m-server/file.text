@@ -1,0 +1,89 @@
+
+how to deebug pless filter my code not connctions moongodb but everthis is good pless debug my code 
+
+
+
+
+
+const express = require('express');
+const router = express.Router();
+const Aireplay = require('../modules/Chat');  // ✅ Correct model import
+
+// POST /chat - auto-reply from MongoDB
+router.post('/', async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.status(400).json({ reply: "No message received" });
+
+  try {
+    console.log("🔍 Searching for:", message);
+
+    // ✅ Partial + case-insensitive match
+    const replyDoc = await Aireplay.findOne({
+      userMessage: { $regex: message, $options: 'i' }
+    });
+
+    if (replyDoc) {
+      console.log("✅ Found:", replyDoc);
+      return res.json({ reply: replyDoc.aiReply });
+    } else {
+      console.log("❌ No match found");
+      return res.json({ reply: "🤖 Sorry, I don't have a reply for that yet." });
+    }
+  } catch (err) {
+    console.error("Error finding reply:", err);
+    return res.status(500).json({ reply: "⚠️ Something went wrong!" });
+  }
+});
+
+module.exports = router;
+const mongoose = require('mongoose');
+
+const AireplaySchema = new mongoose.Schema({
+  userMessage: { type: String, required: true },
+  aiReply: { type: String, required: true }
+});
+
+module.exports = mongoose.model('Aireplay', AireplaySchema,'aireplays');
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require("dotenv").config();
+
+const authRoutes = require('./routes/auth');
+const chatRoutes = require('./routes/chat');   // ✅ Import Gemini route
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+app.use(express.json());
+app.use(cors());
+
+// Home test
+app.get("/", (req, res) => {
+    res.send("hello");
+});
+
+// Auth routes
+app.use("/api/auth", authRoutes);
+
+// ✅ Gemini routes
+app.use("/chat", chatRoutes);
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/uk', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.log("MongoDB connection error:", err));
+
+// Error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something went wrong!' });
+});
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
