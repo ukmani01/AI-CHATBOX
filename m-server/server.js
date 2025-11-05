@@ -24,7 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/chat", chatRoutes);
 
 // ✅ MongoDB connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/uk', {
+mongoose.connect('mongodb://127.0.0.1:27017/uk', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
