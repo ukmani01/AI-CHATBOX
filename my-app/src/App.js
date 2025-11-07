@@ -17,7 +17,7 @@ import NavbarMenu from "./NavbarMenu/NavbarMenu";
 import History from "../src/History/History.js";
 import { PersonCircle } from "react-bootstrap-icons";
 
-import "./App.css";
+//import "./App.css";
 
 // Navbar component
 const Navbar = ({ token, username, logout }) => (
@@ -114,7 +114,7 @@ function App() {
 
 export default function AppWrapper() {
   return (
-    <Router>
+    <Router basename={process.env.NODE_ENV === "production" ? "/AI-CHATBOX" : "/"}  >
       <App />
       
     </Router>

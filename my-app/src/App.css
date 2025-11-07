@@ -4,13 +4,13 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  background: linear-gradient(135deg, hsl(240, 12%, 90%), #d2d8e0);
   font-family: 'Arial', sans-serif;
 }
 
 /* Login box */
 .login-box {
-  background-color: #1f2937;
+  background-color: hsl(213, 24%, 91%);
   padding: 35px 25px;
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
