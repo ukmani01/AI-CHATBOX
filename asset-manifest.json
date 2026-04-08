@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/AI-CHATBOX/static/css/main.31d6cfe0.css",
-    "main.js": "/AI-CHATBOX/static/js/main.955bb872.js",
+    "main.js": "/AI-CHATBOX/static/js/main.048e2a8a.js",
     "static/js/453.117b0875.chunk.js": "/AI-CHATBOX/static/js/453.117b0875.chunk.js",
     "index.html": "/AI-CHATBOX/index.html",
-    "main.955bb872.js.map": "/AI-CHATBOX/static/js/main.955bb872.js.map",
+    "main.048e2a8a.js.map": "/AI-CHATBOX/static/js/main.048e2a8a.js.map",
     "453.117b0875.chunk.js.map": "/AI-CHATBOX/static/js/453.117b0875.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.955bb872.js"
+    "static/js/main.048e2a8a.js"
   ]
 }
